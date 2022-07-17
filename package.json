@@ -19,7 +19,28 @@
 				"command": "mdc.helloWorld",
 				"title": "Hello World"
 			}
-		]
+		],
+		"viewsContainers": {
+			"activitybar": [
+				{
+					"id": "package-explorer",
+					"title": "MDC",
+					"icon": "$(cloud)"
+				}
+			]
+		},
+		"views": {
+			"package-explorer": [
+				{
+					"id": "package-resources",
+					"name": "RESOURCES"
+				},
+				{
+					"id": "package-features",
+					"name": "MORE FEATURES"
+				}
+			]
+		}
 	},
 	"scripts": {
 		"vscode:prepublish": "npm run compile",
