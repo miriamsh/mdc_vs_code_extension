@@ -1,5 +1,5 @@
 {
-  "name": "mdc",
+	"name": "mdc",
 	"displayName": "Mdc",
 	"description": "",
 	"version": "0.0.1",
@@ -10,14 +10,22 @@
 		"Other"
 	],
 	"activationEvents": [
-        "onCommand:mdc.helloWorld"
+		"*"
 	],
 	"main": "./out/extension.js",
 	"contributes": {
 		"commands": [
 			{
-				"command": "mdc.helloWorld",
-				"title": "Hello World"
+				"command": "package-resources.refreshEntry",
+				"title": "Refresh",
+				"when":"view==package-resources",
+				"icon": "$(extensions-refresh)"
+			},
+			{
+				"command": "package-resources.addEntry",
+				"title": "Add",
+				"when":"view=package-resources",
+				"icon": "$(diff-review-insert)"
 			}
 		],
 		"viewsContainers": {
@@ -38,7 +46,22 @@
 				{
 					"id": "package-features",
 					"name": "MORE FEATURES"
+				},
+				{
+					"id": "nodeDependencies",
+					"name": "Node Dependencies"
 				}
+			]
+			 
+		},
+		"menus": {
+			"view/title": [
+				{
+					"command": "package-resources.refreshEntry"
+  				},
+				{
+					"command": "package-resources.addEntry"
+  				}
 			]
 		}
 	},
@@ -51,16 +74,19 @@
 		"test": "node ./out/test/runTest.js"
 	},
 	"devDependencies": {
-		"@types/vscode": "^1.69.0",
 		"@types/glob": "^7.2.0",
 		"@types/mocha": "^9.1.1",
 		"@types/node": "16.x",
+		"@types/vscode": "^1.69.0",
 		"@typescript-eslint/eslint-plugin": "^5.30.0",
 		"@typescript-eslint/parser": "^5.30.0",
+		"@vscode/test-electron": "^2.1.5",
 		"eslint": "^8.18.0",
 		"glob": "^8.0.3",
 		"mocha": "^10.0.0",
-		"typescript": "^4.7.4",
-		"@vscode/test-electron": "^2.1.5"
+		"typescript": "^4.7.4"
+	},
+	"dependencies": {
+		"axios": "^0.27.2"
 	}
 }
