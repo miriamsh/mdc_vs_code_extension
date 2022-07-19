@@ -26,7 +26,7 @@
 				"title": "Add",
 				"when":"view=package-resources",
 				"icon": "$(diff-review-insert)"
-			}
+			} 
 		],
 		"viewsContainers": {
 			"activitybar": [

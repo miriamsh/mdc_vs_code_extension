@@ -1,9 +1,6 @@
 import * as vscode from 'vscode';
 import { TreeDataProvider } from './TreeDataProvider';
-//import { NodeDependenciesProvider } from './nodeDataProvider';
-
-
-
+import { NodeDependenciesProvider } from './nodeDataProvider';
 
 export async function activate(context: vscode.ExtensionContext) {
 
@@ -14,13 +11,24 @@ export async function activate(context: vscode.ExtensionContext) {
   _treeDataProvider.refresh()
   );
 
+ 
+  context.subscriptions.push(
+		vscode.commands.registerCommand("subscription.getSecurityVulnerabilities",  (subscriptionId) => {
+			 _treeDataProvider.getSecurityVulnerabilities(subscriptionId);
+		})
+	);
+
+  //  vscode.commands.registerCommand('subscription.getSecurityVulnerabilities', (subscriptionId)=>{
+  //        _treeDataProvider.getSubGrid(subscriptionId);     
+  // });
+
+
   // const rootPath =
   //   vscode.workspace.workspaceFolders && vscode.workspace.workspaceFolders.length > 0
   //     ? vscode.workspace.workspaceFolders[0].uri.fsPath
   //     : '';
   // const nodeDependenciesProvider = new NodeDependenciesProvider(rootPath);
   // vscode.window.registerTreeDataProvider('nodeDependencies', nodeDependenciesProvider);
-
 
 }
 
