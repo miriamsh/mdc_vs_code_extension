@@ -1,92 +1,92 @@
 {
-	"name": "mdc",
-	"displayName": "Mdc",
-	"description": "",
-	"version": "0.0.1",
-	"engines": {
-		"vscode": "^1.69.0"
-	},
-	"categories": [
-		"Other"
-	],
-	"activationEvents": [
-		"*"
-	],
-	"main": "./out/extension.js",
-	"contributes": {
-		"commands": [
-			{
-				"command": "package-resources.refreshEntry",
-				"title": "Refresh",
-				"when":"view==package-resources",
-				"icon": "$(extensions-refresh)"
-			},
-			{
-				"command": "package-resources.addEntry",
-				"title": "Add",
-				"when":"view=package-resources",
-				"icon": "$(diff-review-insert)"
-			} 
-		],
-		"viewsContainers": {
-			"activitybar": [
-				{
-					"id": "package-explorer",
-					"title": "MDC",
-					"icon": "$(cloud)"
-				}
-			]
-		},
-		"views": {
-			"package-explorer": [
-				{
-					"id": "package-resources",
-					"name": "RESOURCES"
-				},
-				{
-					"id": "package-features",
-					"name": "MORE FEATURES"
-				},
-				{
-					"id": "nodeDependencies",
-					"name": "Node Dependencies"
-				}
-			]
-			 
-		},
-		"menus": {
-			"view/title": [
-				{
-					"command": "package-resources.refreshEntry"
-  				},
-				{
-					"command": "package-resources.addEntry"
-  				}
-			]
-		}
-	},
-	"scripts": {
-		"vscode:prepublish": "npm run compile",
-		"compile": "tsc -p ./",
-		"watch": "tsc -watch -p ./",
-		"pretest": "npm run compile && npm run lint",
-		"lint": "eslint src --ext ts",
-		"test": "node ./out/test/runTest.js"
-	},
-	"devDependencies": {
-		"@types/glob": "^7.2.0",
-		"@types/mocha": "^9.1.1",
-		"@types/node": "16.x",
-		"@types/vscode": "^1.69.0",
-		"@typescript-eslint/eslint-plugin": "^5.30.0",
-		"@typescript-eslint/parser": "^5.30.0",
-		"@vscode/test-electron": "^2.1.5",
-		"eslint": "^8.18.0",
-		"glob": "^8.0.3",
-		"mocha": "^10.0.0",
-		"typescript": "^4.7.4"
-	},
-	"dependencies": {
-		"axios": "^0.27.2"
-	}
+  "name": "login-to-azure",
+  "displayName": "login_to_azure",
+  "description": "",
+  "version": "0.0.1",
+  "engines": {
+    "vscode": "^1.69.0"
+  },
+  "publisher": "mdc-detection",
+  "aiKey": "AIF-d9b70cd4-b9f9-4d70-929b-a071c400b217",
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "*"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "package-explorer",
+          "title": "MDC",
+          "icon": "$(star)"
+        }
+      ]
+    },
+    "views": {
+      "package-explorer": [
+        {
+          "id": "package-resources",
+          "name": "RESOURCES"
+        },
+        {
+          "id": "package-features",
+          "name": "MORE FEATURES"
+        },
+        {
+          "id": "nodeDependencies",
+          "name": "Node Dependencies"
+        }
+      ]
+    },
+    "commands": [
+     
+    ],
+    "menus": {
+      "view/title": [
+        
+      ],
+      "view/item/context": [
+        
+      ]
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "pretest": "npm run compile && npm run lint",
+    "lint": "eslint src --ext ts",
+    "test": "node ./out/test/runTest.js"
+  },
+  "devDependencies": {
+    "@types/glob": "^7.2.0",
+    "@types/mocha": "^9.1.1",
+    "@types/node": "16.x",
+    "@types/vscode": "^1.69.0",
+    "@typescript-eslint/eslint-plugin": "^5.30.0",
+    "@typescript-eslint/parser": "^5.30.0",
+    "@vscode/test-electron": "^2.1.5",
+    "eslint": "^8.18.0",
+    "glob": "^8.0.3",
+    "mocha": "^10.0.0",
+    "typescript": "^4.7.4"
+  },
+  "dependencies": {
+    "@azure/arm-appservice": "^13.0.0",
+    "@azure/arm-deviceprovisioningservices": "^5.0.1",
+    "@azure/arm-resources": "^5.0.1",
+    "@azure/arm-subscriptions": "^5.0.1",
+    "@azure/identity": "^2.1.0",
+    "@azure/ms-rest-nodeauth": "^3.1.1",
+    "@microsoft/vscode-azext-azureutils": "^0.3.4",
+    "@microsoft/vscode-azext-utils": "^0.3.9",
+    "azure-arm-website": "^5.7.0",
+    "vscode-azureextensionui": "^0.50.0"
+  },
+  "extensionDependencies": [
+    "ms-vscode.azure-account"
+  ]
 }

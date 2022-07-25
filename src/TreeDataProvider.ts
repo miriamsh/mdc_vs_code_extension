@@ -1,21 +1,28 @@
 import axios, { responseEncoding } from 'axios';
+import { utimes } from 'fs';
+import { EventEmitter } from 'stream';
 import * as vscode from 'vscode';
 
 
 export class TreeDataProvider implements vscode.TreeDataProvider<TreeItem> {
+    
     private _onDidChangeTreeData: vscode.EventEmitter<TreeItem | undefined | null | void> = new vscode.EventEmitter<TreeItem | undefined | null | void>();
     readonly onDidChangeTreeData: vscode.Event<TreeItem | undefined | null | void> = this._onDidChangeTreeData.event;
+
+    private readonly _onDidExpandElement: vscode.EventEmitter<TreeItem | undefined | null | void> = new vscode.EventEmitter<TreeItem | undefined | null | void>;
+    readonly onDidExpandElement: vscode.Event<TreeItem | undefined | null | void> = this._onDidExpandElement.event;
 
     public refresh(): void {
         this._onDidChangeTreeData.fire();
     }
+
 
     //Temporarly, after LogIn to Azure Account, we may get the credentials for this data.
     data!: TreeItem[];
     _token: string;
 
     constructor() {
-        this._token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsIng1dCI6IjJaUXBKM1VwYmpBWVhZR2FYRUpsOGxWMFRPSSIsImtpZCI6IjJaUXBKM1VwYmpBWVhZR2FYRUpsOGxWMFRPSSJ9.eyJhdWQiOiJodHRwczovL21hbmFnZW1lbnQuY29yZS53aW5kb3dzLm5ldCIsImlzcyI6Imh0dHBzOi8vc3RzLndpbmRvd3MubmV0L2RhMWQ1YzZkLTc1MjUtNGI5My04NjNiLTE1ODkyNGQ2OThjNy8iLCJpYXQiOjE2NTgyMzIxMjEsIm5iZiI6MTY1ODIzMjEyMSwiZXhwIjoxNjU4MjM3NjE5LCJhY3IiOiIxIiwiYWlvIjoiQVdRQW0vOFRBQUFBaGhXcWFrSFJBaFBTNmlPMWpCMzErbE1Bams0RnNzS3o0RkdjbjE5aUFZL2FzR2QxUEtrTnNmK0x3MVZOYlNBcis2SHNNTGhYcFVVUWJjYUlELzFvM2xaNW5BWDZ4SWZXNitZazZGaitIRmJQUkMvYnVGNjVKTXd5UUZESzRQTFAiLCJhbHRzZWNpZCI6IjE6bGl2ZS5jb206MDAwMzAwMDAyODQ1RjlBMiIsImFtciI6WyJwd2QiLCJtZmEiXSwiYXBwaWQiOiIxOGZiY2ExNi0yMjI0LTQ1ZjYtODViMC1mN2JmMmIzOWIzZjMiLCJhcHBpZGFjciI6IjAiLCJlbWFpbCI6Ik0wNTI3MTcxNDQzQEdNQUlMLkNPTSIsImZhbWlseV9uYW1lIjoi16nXmNeo16DXkdeo15IiLCJnaXZlbl9uYW1lIjoi157Xmdeo15kiLCJncm91cHMiOlsiMzQ1NTI5MTUtNjg5Yy00MDhhLTk3MzQtZmRlNmRlNzY4NDdhIl0sImlkcCI6ImxpdmUuY29tIiwiaXBhZGRyIjoiOTMuMTczLjU1LjIyNSIsIm5hbWUiOiLXnteZ16jXmSDXqdeY16jXoNeR16jXkiIsIm9pZCI6Ijg3NTE1YmE4LTE4MjAtNGI2My1hOTNjLTIyNWYyYjliYzlmZSIsInB1aWQiOiIxMDAzMjAwMjAwNEYzOENBIiwicmgiOiIwLkFZSUFiVndkMmlWMWswdUdPeFdKSk5hWXgwWklmM2tBdXRkUHVrUGF3ZmoyTUJPVkFNQS4iLCJzY3AiOiJ1c2VyX2ltcGVyc29uYXRpb24iLCJzdWIiOiJVOFFzZjdMRk8xd0ZEMFVsS3lhU3VQZHduWDNWY19OcnVua1hoUGVVZVdZIiwidGlkIjoiZGExZDVjNmQtNzUyNS00YjkzLTg2M2ItMTU4OTI0ZDY5OGM3IiwidW5pcXVlX25hbWUiOiJsaXZlLmNvbSNNMDUyNzE3MTQ0M0BHTUFJTC5DT00iLCJ1dGkiOiJfOHJ1NWNWUmRrcXpqR2MxclFWWUFBIiwidmVyIjoiMS4wIiwid2lkcyI6WyI2MmU5MDM5NC02OWY1LTQyMzctOTE5MC0wMTIxNzcxNDVlMTAiLCJiNzlmYmY0ZC0zZWY5LTQ2ODktODE0My03NmIxOTRlODU1MDkiXSwieG1zX3RjZHQiOjE2NTM5OTYzODN9.PRrzULM9Se7fMuNkNK7hxkvldxb313pjKEwaUtsoWyN_TSu5jmiEVc2MCQSOoze6qQqFzOUVIqK69v3zvWHFboFyveE7fDPy9bLwismwbGQT8DOSAxOPvl_xNLUtGJYSe8jYBKQ90Fy89XvgmvAk12RJ1DssSLngloxfiqxKohOyonyq5bH0d6NHuzYmvkr5d3j7fkRY8su8WdZLz2OepTd83W3eoAUEMxZKXjaSM-BfLQzGzrduHl_gefpL7lKuSt2gNDy8i_jDqIykThpAD5pw2Vu818Jed2_NMmWMXVDg_HPniOnz0pyHEKBr7kyuRoBRh1YxrrUwQ76ijKaMVA';
+        this._token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsIng1dCI6IjJaUXBKM1VwYmpBWVhZR2FYRUpsOGxWMFRPSSIsImtpZCI6IjJaUXBKM1VwYmpBWVhZR2FYRUpsOGxWMFRPSSJ9.eyJhdWQiOiJodHRwczovL21hbmFnZW1lbnQuY29yZS53aW5kb3dzLm5ldCIsImlzcyI6Imh0dHBzOi8vc3RzLndpbmRvd3MubmV0L2RhMWQ1YzZkLTc1MjUtNGI5My04NjNiLTE1ODkyNGQ2OThjNy8iLCJpYXQiOjE2NTgzMDYyMjIsIm5iZiI6MTY1ODMwNjIyMiwiZXhwIjoxNjU4MzEwOTg4LCJhY3IiOiIxIiwiYWlvIjoiQVdRQW0vOFRBQUFBOUhxTzRKaEE5QnorYTc3MGt4ZVpISDZOdVNZK1NGQngrUXBhVFdNOUpnQ1lIUmxUdWM0aHY0OWVuakpXc3oxWlJ0MlAyYzNtUlhNdHVxcExtTk1LcU5mbXdYMVU1a0o5bEkzWkkyT2kwdEo5K29nS09PdUI3UU03cndNL1g4eUYiLCJhbHRzZWNpZCI6IjE6bGl2ZS5jb206MDAwMzAwMDAyODQ1RjlBMiIsImFtciI6WyJwd2QiLCJtZmEiXSwiYXBwaWQiOiIxOGZiY2ExNi0yMjI0LTQ1ZjYtODViMC1mN2JmMmIzOWIzZjMiLCJhcHBpZGFjciI6IjAiLCJlbWFpbCI6Ik0wNTI3MTcxNDQzQEdNQUlMLkNPTSIsImZhbWlseV9uYW1lIjoi16nXmNeo16DXkdeo15IiLCJnaXZlbl9uYW1lIjoi157Xmdeo15kiLCJncm91cHMiOlsiMzQ1NTI5MTUtNjg5Yy00MDhhLTk3MzQtZmRlNmRlNzY4NDdhIl0sImlkcCI6ImxpdmUuY29tIiwiaXBhZGRyIjoiMzcuNjAuNDcuMjQ2IiwibmFtZSI6Itee15nXqNeZINep15jXqNeg15HXqNeSIiwib2lkIjoiODc1MTViYTgtMTgyMC00YjYzLWE5M2MtMjI1ZjJiOWJjOWZlIiwicHVpZCI6IjEwMDMyMDAyMDA0RjM4Q0EiLCJyaCI6IjAuQVlJQWJWd2QyaVYxazB1R094V0pKTmFZeDBaSWYza0F1dGRQdWtQYXdmajJNQk9WQU1BLiIsInNjcCI6InVzZXJfaW1wZXJzb25hdGlvbiIsInN1YiI6IlU4UXNmN0xGTzF3RkQwVWxLeWFTdVBkd25YM1ZjX05ydW5rWGhQZVVlV1kiLCJ0aWQiOiJkYTFkNWM2ZC03NTI1LTRiOTMtODYzYi0xNTg5MjRkNjk4YzciLCJ1bmlxdWVfbmFtZSI6ImxpdmUuY29tI00wNTI3MTcxNDQzQEdNQUlMLkNPTSIsInV0aSI6IkVwaVYwV2dHTEVTUVQtMURmakRMQUEiLCJ2ZXIiOiIxLjAiLCJ3aWRzIjpbIjYyZTkwMzk0LTY5ZjUtNDIzNy05MTkwLTAxMjE3NzE0NWUxMCIsImI3OWZiZjRkLTNlZjktNDY4OS04MTQzLTc2YjE5NGU4NTUwOSJdLCJ4bXNfdGNkdCI6MTY1Mzk5NjM4M30.LyBk5Z9FHUxYBQpi8Ot8GZGrxoNhY2364yyQuZdPIu17ma5kQ39-rMG6O2UBhFSLcF2Sm_cLkCvzEfd-l3xiOYdHc9r7C3rD3sddEhnnUMdtwCrhoLp0ijYfVxIEpxyNogNa9AvBw61pcdf-R8-p7Osq_cynuHuHJSFNzaDrjAW1ONRL26zGHRlYQv3gzbtZoNuosJMecV4yWIoRekTkHtiJsffk0_XjUxrcHHbA8MIsulbqOM2UxKE7Mzu3a1G_fwY_FbaIhy1aEIv5Qt4d9j7NDR1vJetBovhOgfA80gREa6tv5r5XxENlgAbxTht0tOKUSM0mNdNY9p3IbARm3w';
     }
 
     getTreeItem(element: TreeItem): vscode.TreeItem | Thenable<vscode.TreeItem> {
@@ -49,6 +56,13 @@ export class TreeDataProvider implements vscode.TreeDataProvider<TreeItem> {
             }).then(response => {
                 const dataProvider = response.data.value;
                 return dataProvider.map(function (sub: { "displayName": string, "subscriptionId": string }) {
+                    // const item:TreeItem=new TreeItem(sub.displayName, "", vscode.TreeItemCollapsibleState.Collapsed);
+                    // item.command= {
+                    //     command: 'subscription.getSubscriptionsList',
+                    //     title: '',
+                    //     arguments: [item],
+                    // };
+                    // return item;
                     return new TreeItem(sub.displayName, "", vscode.TreeItemCollapsibleState.Collapsed, {
                         command: 'subscription.getSubscriptionsList',
                         title: '',
@@ -133,7 +147,7 @@ export class TreeDataProvider implements vscode.TreeDataProvider<TreeItem> {
                 headers: { "Authorization": `Bearer ${this._token}` }
             }).then(response => {
                 const dataProvider = response.data.value;
-                return dataProvider.map(function (sub: { "name": string}) {
+                return dataProvider.map(function (sub: { "name": string }) {
                     return new TreeItem(sub.name, "", vscode.TreeItemCollapsibleState.Collapsed);
                 });
             });
@@ -144,21 +158,23 @@ export class TreeDataProvider implements vscode.TreeDataProvider<TreeItem> {
     //2) add a function for refreshing the token
     //3) rearrange the code-make it generic, etc.
     //4) add icons for each treeItem type
-      
+
 }
 
 class TreeItem extends vscode.TreeItem {
+
+
     constructor(
         public readonly label: string,
         private version: string,
         public readonly collapsibleState: vscode.TreeItemCollapsibleState,
-        public readonly command?: vscode.Command
+        public command?: vscode.Command
     ) {
         super(label, collapsibleState);
         this.tooltip = `${this.label}-${this.version}`;
         this.description = this.version;
-        this.command = command;
     }
+
 
 
     iconPath = {
