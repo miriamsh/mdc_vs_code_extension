@@ -1,6 +1,3 @@
-
-
-
 import { AzureAccountTreeItemBase, SubscriptionTreeItemBase } from '@microsoft/vscode-azext-azureutils';
 import {  ISubscriptionContext } from '@microsoft/vscode-azext-utils';
 import { SubscriptionTreeItem } from './SubscriptionTreeItem';
