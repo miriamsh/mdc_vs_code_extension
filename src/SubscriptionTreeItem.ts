@@ -1,4 +1,4 @@
-import { SecurityCenter } from "@azure/arm-security";
+
 import { SubscriptionTreeItemBase } from "@microsoft/vscode-azext-azureutils";
 import { AzExtParentTreeItem, AzExtTreeItem, IActionContext, ISubscriptionContext } from "@microsoft/vscode-azext-utils";
 
@@ -17,6 +17,7 @@ export class SubscriptionTreeItem extends SubscriptionTreeItemBase {
 		root: ISubscriptionContext) {
 		super(parent, root);
 		this.root = root;
+		this.iconPath="C://Users/user1/.vscode/extensions/mdc_vs_code_extension-1/node_modules/@microsoft/vscode-azext-azureutils/resources/azureSubscription.svg";
 
 	}
 
@@ -24,7 +25,7 @@ export class SubscriptionTreeItem extends SubscriptionTreeItemBase {
 		return this._nextLink !== undefined;
 	}
 
-
+	
 	public async loadMoreChildrenImpl(clearCache: boolean, context: IActionContext): Promise<AzExtTreeItem[]> {
 
 		let recommendation: AssessmentTreeItem = new AssessmentTreeItem("Recommendation", this);

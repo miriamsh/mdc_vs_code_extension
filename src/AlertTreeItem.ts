@@ -14,6 +14,7 @@ export class AlertTreeItem extends AzExtParentTreeItem {
 		this.contextValue = contextValue;
 		this.client = new SecurityCenter(this.subscription.credentials, this.subscription.subscriptionId);
         this.alerts = this.client.alerts;
+		this.iconPath="C:/Users/user1/.vscode/extensions/mdc_vs_code_extension-1/src/icons/alert.png";
 	}
 
 	public async loadMoreChildrenImpl(clearCache: boolean, context: IActionContext): Promise<AzExtTreeItem[]> {

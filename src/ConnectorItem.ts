@@ -15,7 +15,8 @@ export class ConnectorTreeItem extends AzExtParentTreeItem {
 		this.label = contextValue;
 		this.client = new SecurityCenter(this.subscription.credentials, this.subscription.subscriptionId);
 		this.connectors = this.client.connectors;
-
+		this.iconPath="C:/Users/user1/.vscode/extensions/mdc_vs_code_extension-1/src/icons/connector.svg";
+		
 	}
 	
 	public async loadMoreChildrenImpl(clearCache: boolean, context: IActionContext): Promise<AzExtTreeItem[]> {
