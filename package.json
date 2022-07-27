@@ -21,7 +21,7 @@
         {
           "id": "package-explorer",
           "title": "MDC",
-          "icon": "$(star)"
+          "icon": "$(preview)"
         }
       ]
     },
@@ -42,51 +42,117 @@
       ]
     },
     "commands": [
-     
+      {
+        "command": "recommendation.filtering.saverity",
+        "title": "saverity",
+        "shortTitle": "ss"
+      },
+      {
+        "command": "recommendation.filtering.status",
+        "title": "$(cloud) status",
+        "icon": "$(cloud)"
+      },
+      {
+        "command": "recommendation.filtering.cloud",
+        "title": "cloud"
+      }
     ],
     "menus": {
-      "view/title": [
-        
-      ],
+      "view/title": [],
       "view/item/context": [
-        
+        {
+          "submenu": "recommendation.filtering",
+          "when": "view == package-resources && viewItem == azureutils.subscription",
+          "group": "inline"
+        }
+      ],
+      "recommendation.filtering": [
+        {
+          "command": "recommendation.filtering.saverity",
+          "group": "1_default@1"
+        },
+        {
+          "command": "recommendation.filtering.status",
+          "group": "2_default@1"
+        },
+        {
+          "command": "recommendation.filtering.cloud",
+          "group": "3_default@1"
+        }
       ]
-    }
-  },
-  "scripts": {
-    "vscode:prepublish": "npm run compile",
-    "compile": "tsc -p ./",
-    "watch": "tsc -watch -p ./",
-    "pretest": "npm run compile && npm run lint",
-    "lint": "eslint src --ext ts",
-    "test": "node ./out/test/runTest.js"
-  },
-  "devDependencies": {
-    "@types/glob": "^7.2.0",
-    "@types/mocha": "^9.1.1",
-    "@types/node": "16.x",
-    "@types/vscode": "^1.69.0",
-    "@typescript-eslint/eslint-plugin": "^5.30.0",
-    "@typescript-eslint/parser": "^5.30.0",
-    "@vscode/test-electron": "^2.1.5",
-    "eslint": "^8.18.0",
-    "glob": "^8.0.3",
-    "mocha": "^10.0.0",
-    "typescript": "^4.7.4"
-  },
-  "dependencies": {
-    "@azure/arm-appservice": "^13.0.0",
-    "@azure/arm-deviceprovisioningservices": "^5.0.1",
-    "@azure/arm-resources": "^5.0.1",
-    "@azure/arm-subscriptions": "^5.0.1",
-    "@azure/identity": "^2.1.0",
-    "@azure/ms-rest-nodeauth": "^3.1.1",
-    "@microsoft/vscode-azext-azureutils": "^0.3.4",
-    "@microsoft/vscode-azext-utils": "^0.3.9",
-    "azure-arm-website": "^5.7.0",
-    "vscode-azureextensionui": "^0.50.0"
-  },
-  "extensionDependencies": [
-    "ms-vscode.azure-account"
-  ]
+    },
+    "submenus": [
+      {
+        "id": "recommendation.filtering",
+        "label": "Filter",
+        "icon": {
+          "light": "resources/light/filter.svg",
+          "dark": "resources/dark/filter.svg"
+        }
+      }
+    ],
+    "configuration": {
+      "type": "object",
+      "title": "Azure configuration",
+      "properties": {
+        "azure.severityFilter": {
+          "type": "array",
+          "default": null,
+          "description": "The severity filter"
+        },
+        "azure.statusFilter": {
+          "type": "array",
+          "default": null,
+          "description": "The status filter, "
+        },
+        "azure.environmentFilter": {
+          "type": "array",
+          "default": null,
+          "description": "The environment filter"
+        },
+        "azure.cloudProvider": {
+          "type": "array",
+          "default": null,
+          "description": "The cloud provider filter"
+        }
+      }
+    },
+    "scripts": {
+      "vscode:prepublish": "npm run compile",
+      "compile": "tsc -p ./",
+      "watch": "tsc -watch -p ./",
+      "pretest": "npm run compile && npm run lint",
+      "lint": "eslint src --ext ts",
+      "test": "node ./out/test/runTest.js"
+    },
+    "devDependencies": {
+      "@types/glob": "^7.2.0",
+      "@types/mocha": "^9.1.1",
+      "@types/node": "16.x",
+      "@types/vscode": "^1.69.0",
+      "@typescript-eslint/eslint-plugin": "^5.30.0",
+      "@typescript-eslint/parser": "^5.30.0",
+      "@vscode/test-electron": "^2.1.5",
+      "eslint": "^8.18.0",
+      "glob": "^8.0.3",
+      "mocha": "^10.0.0",
+      "typescript": "^4.7.4"
+    },
+    "dependencies": {
+      "@azure/arm-appservice": "^13.0.0",
+      "@azure/arm-deviceprovisioningservices": "^5.0.1",
+      "@azure/arm-resources": "^5.0.1",
+      "@azure/arm-security": "^5.0.0",
+      "@azure/arm-subscriptions": "^5.0.1",
+      "@azure/identity": "^2.1.0",
+      "@azure/ms-rest-nodeauth": "^3.1.1",
+      "@microsoft/vscode-azext-azureutils": "^0.3.4",
+      "@microsoft/vscode-azext-utils": "^0.3.9",
+      "azure-arm-website": "^5.7.0",
+      "vscode-azureextensionui": "^0.50.0"
+    },
+    "extensionDependencies": [
+      "ms-vscode.azure-account"
+    ]
+  }
 }

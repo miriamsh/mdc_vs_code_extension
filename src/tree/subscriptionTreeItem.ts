@@ -1,10 +1,10 @@
 import { createAzureClient, SubscriptionTreeItemBase } from '@microsoft/vscode-azext-azureutils';
 import { IActionContext, AzExtTreeItem, AzExtParentTreeItem, ISubscriptionContext } from '@microsoft/vscode-azext-utils';
 import { Subscription } from '@azure/arm-subscriptions';
-import { ResourceManagementClient } from '@azure/arm-resources';
 import { Site, WebAppCollection } from 'azure-arm-website/lib/models';
 import { WebAppTreeItem } from './webAppTreeItem';
 import WebSiteManagementClient from 'azure-arm-website';
+
 
 // The de facto API of tree nodes that represent individual Azure subscriptions.
 // Tree items should implement this interface to maintain backward compatibility with previous versions of the extension.
@@ -16,14 +16,18 @@ export interface SubscriptionTreeNode {
 }
 
 export default class SubscriptionTreeItem extends SubscriptionTreeItemBase implements SubscriptionTreeNode {
+     
     private _nextLink: string | undefined;
     constructor(
         parent: AzExtParentTreeItem,
         root: ISubscriptionContext) {
-        super(parent, root);
-    }
+        super(parent, root);  
+        //todo:change the path to relative
+        this.iconPath="C:/Users/מירי/.vscode/mdc/node_modules/@microsoft/vscode-azext-azureutils/resources/azureSubscription.svg";
+     }
 
-    public readonly contextValue: string = 'aks.subscription';
+    public readonly contextValue: string = 'azureutils.subscription';
+
 
     public hasMoreChildrenImpl(): boolean {
         return this._nextLink !== undefined;
@@ -31,14 +35,9 @@ export default class SubscriptionTreeItem extends SubscriptionTreeItemBase imple
     }
 
     public async loadMoreChildrenImpl(clearCache: boolean, context: IActionContext): Promise<AzExtTreeItem[]> {
-        // const client = new ResourceManagementClient(this.subscription.credentials, this.subscription.subscriptionId);
-        // const aksClusterResources = await listAll(client.resources, client.resources.list({ filter: "resourceType eq 'Microsoft.ContainerService/managedClusters'" }));
-
-        // return aksClusterResources.map((aksClusterResource) => new AksClusterTreeItem(this, aksClusterResource));
         if (clearCache) {
             this._nextLink = undefined;
         }
-        const t: WebSiteManagementClient = new WebSiteManagementClient(this.subscription.credentials, this.subscription.subscriptionId);
         const client: WebSiteManagementClient = createAzureClient([context, this.subscription], WebSiteManagementClient.arguments);
         const webAppCollection: WebAppCollection = this._nextLink === undefined ?
             await client.webApps.list() :
@@ -54,6 +53,8 @@ export default class SubscriptionTreeItem extends SubscriptionTreeItemBase imple
     public get session(): ISubscriptionContext {
         return this.session;
     }
+
+    
 
     public readonly nodeType = 'subscription';
 }
