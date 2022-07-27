@@ -43,47 +43,99 @@
     },
     "commands": [
       {
-        "command": "recommendation.filtering.saverity",
-        "title": "saverity",
-        "shortTitle": "ss"
+        "command": "recommendation.filter.severity",
+        "title": "Severity"
       },
       {
-        "command": "recommendation.filtering.status",
-        "title": "$(cloud) status",
-        "icon": "$(cloud)"
+        "command": "recommendation.filter.status",
+        "title": "Status"
       },
       {
-        "command": "recommendation.filtering.cloud",
-        "title": "cloud"
+        "command": "recommendation.filter.environment",
+        "title": "Environment"
+      },
+      {
+        "command": "alerts.filter.severity",
+        "title": "Severity"
+      },
+      {
+        "command": "alerts.filter.status",
+        "title": "Status"
+      },
+      {
+        "command": "connectors.filter.cloudExplorer",
+        "title": "Cloud Explorer"
       }
     ],
     "menus": {
       "view/title": [],
       "view/item/context": [
         {
-          "submenu": "recommendation.filtering",
-          "when": "view == package-resources && viewItem == azureutils.subscription",
+          "submenu": "recommendations.filters",
+          "when": "viewItem == securityCenter.assesments",
+          "group": "inline"
+        },
+        {
+          "submenu": "alerts.filters",
+          "when": "viewItem == securityCenter.alerts",
+          "group": "inline"
+        },
+        {
+          "submenu": "connectors.filters",
+          "when": "viewItem == securityCenter.connectors",
           "group": "inline"
         }
       ],
-      "recommendation.filtering": [
+      "recommendations.filters": [
         {
-          "command": "recommendation.filtering.saverity",
+          "command": "recommendation.filter.severity",
           "group": "1_default@1"
         },
         {
-          "command": "recommendation.filtering.status",
+          "command": "recommendation.filter.status",
           "group": "2_default@1"
         },
         {
-          "command": "recommendation.filtering.cloud",
+          "command": "recommendation.filter.environment",
           "group": "3_default@1"
+        }
+      ],
+      "alerts.filters": [
+        {
+          "command": "alerts.filter.severity",
+          "group": "1_default@1"
+        },
+        {
+          "command": "alerts.filter.status",
+          "group": "2_default@1"
+        }
+      ],
+      "connectors.filters": [
+        {
+          "command": "connectors.filter.cloudExplorer",
+          "group": "1_default@1"
         }
       ]
     },
     "submenus": [
       {
-        "id": "recommendation.filtering",
+        "id": "recommendations.filters",
+        "label": "Filter",
+        "icon": {
+          "light": "resources/light/filter.svg",
+          "dark": "resources/dark/filter.svg"
+        }
+      },
+      {
+        "id": "alerts.filters",
+        "label": "Filter",
+        "icon": {
+          "light": "resources/light/filter.svg",
+          "dark": "resources/dark/filter.svg"
+        }
+      },
+      {
+        "id": "connectors.filters",
         "label": "Filter",
         "icon": {
           "light": "resources/light/filter.svg",

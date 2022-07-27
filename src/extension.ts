@@ -1,10 +1,9 @@
 import * as vscode from 'vscode';
-import AzureAccountTreeItem from './tree/azureAccountTreeItem';
+import { AzureAccountTreeItem } from './tree/AzureAccountTreeItem';
 import { createAzExtOutputChannel, AzExtTreeDataProvider, registerCommand } from '@microsoft/vscode-azext-utils';
 import { registerAzureUtilsExtensionVariables } from '@microsoft/vscode-azext-azureutils';
 import { filterBy } from './commands/filterByCommand';
 import { SeverityFilters, StatusFilters, EnvironmentFilters } from './Models/filters.enum';
-
 
 export async function activate(context: vscode.ExtensionContext) {
 
@@ -16,9 +15,12 @@ export async function activate(context: vscode.ExtensionContext) {
     };
     registerAzureUtilsExtensionVariables(uiExtensionVariables);
 
+
     const azureAccountTreeItem = new AzureAccountTreeItem();
     context.subscriptions.push(azureAccountTreeItem);
-    const treeDataProvider = new AzExtTreeDataProvider(azureAccountTreeItem, 'azureAks.loadMore');
+    const treeDataProvider = new AzExtTreeDataProvider(azureAccountTreeItem, "subscription.getSubscription");
+    context.subscriptions.push(vscode.window.createTreeView("package-resources", { treeDataProvider }));
+
 
     vscode.window.registerTreeDataProvider('package-resources', treeDataProvider);
 
@@ -51,15 +53,15 @@ export async function activate(context: vscode.ExtensionContext) {
 
     context.globalState.update("environmentFilters", environmentFilters);
 
-    context.subscriptions.push(vscode.commands.registerCommand('recommendation.filtering.saverity', async () => {
+    context.subscriptions.push(vscode.commands.registerCommand('recommendation.filter.severity', async () => {
         filterBy(context, "severityFilters", context.globalState.get("severityFilters")!, "Severity");
     }));
 
-    registerCommand('recommendation.filtering.status', () => {
+    registerCommand('recommendation.filter.status', () => {
         filterBy(context, "statusFilters", context.globalState.get("statusFilters")!, "Status");
     });
 
-    registerCommand('recommendation.filtering.cloud', () => {
+    registerCommand('recommendation.filter.environment', () => {
         filterBy(context, "environmentFilters", context.globalState.get("environmentFilters")!, "Environment");
     });
 

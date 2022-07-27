@@ -19,6 +19,8 @@ export async function filterBy(context: vscode.ExtensionContext, key: string, fi
             });
             context.globalState.update(`${key}`, filters);
             const filterBy: Filtering = new Filtering(category, picks.map(p => p.label));
+            console.log(picks);
+            
         }
     }
     catch (error) {
