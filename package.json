@@ -1,80 +1,183 @@
 {
-	"name": "mdc",
-	"displayName": "Mdc",
+	"name": "login-to-azure",
+	"displayName": "login_to_azure",
 	"description": "",
-	"aiKey": "AIF-d9b70cd4-b9f9-4d70-929b-a071c400b217",
-	"publisher": "Rut",
 	"version": "0.0.1",
 	"engines": {
-		"vscode": "^1.69.0"
+	  "vscode": "^1.69.0"
 	},
+	"publisher": "mdc-detection",
+	"aiKey": "AIF-d9b70cd4-b9f9-4d70-929b-a071c400b217",
 	"categories": [
-		"Other"
+	  "Other"
 	],
 	"activationEvents": [
-		"*"
+	  "*"
 	],
 	"main": "./out/extension.js",
 	"contributes": {
-		"commands": [
-			{
-				"command": "package-resources.refreshEntry",
-				"title": "Refresh",
-				"when": "view==package-resources",
-				"icon": "$(extensions-refresh)"
-			},
-			{
-				"command": "package-resources.addEntry",
-				"title": "Add",
-				"when": "view=package-resources",
-				"icon": "$(diff-review-insert)"
-			}
-		],
-		"viewsContainers": {
-			"activitybar": [
-				{
-					"id": "package-explorer",
-					"title": "MDC",
-					"icon": "$(cloud)"
-				}
-			]
+	  "viewsContainers": {
+		"activitybar": [
+		  {
+			"id": "package-explorer",
+			"title": "MDC",
+			"icon": "$(preview)"
+		  }
+		]
+	  },
+	  "views": {
+		"package-explorer": [
+		  {
+			"id": "package-resources",
+			"name": "RESOURCES"
+		  },
+		  {
+			"id": "package-features",
+			"name": "MORE FEATURES"
+		  },
+		  {
+			"id": "nodeDependencies",
+			"name": "Node Dependencies"
+		  }
+		]
+	  },
+	  "commands": [
+		{
+		  "command": "recommendation.filter.severity",
+		  "title": "Severity"
 		},
-		"views": {
-			"package-explorer": [
-				{
-					"id": "package-resources",
-					"name": "RESOURCES"
-				},
-				{
-					"id": "package-features",
-					"name": "MORE FEATURES"
-				},
-				{
-					"id": "nodeDependencies",
-					"name": "Node Dependencies"
-				}
-			]
+		{
+		  "command": "recommendation.filter.status",
+		  "title": "Status"
 		},
-		"menus": {
-			"view/title": [
-				{
-					"command": "package-resources.refreshEntry"
-				},
-				{
-					"command": "package-resources.addEntry"
-				}
-			]
+		{
+		  "command": "recommendation.filter.environment",
+		  "title": "Environment"
+		},
+		{
+		  "command": "alerts.filter.severity",
+		  "title": "Severity"
+		},
+		{
+		  "command": "alerts.filter.status",
+		  "title": "Status"
+		},
+		{
+		  "command": "connectors.filter.cloudExplorer",
+		  "title": "Cloud Explorer"
 		}
-	},
-	"scripts": {
+	  ],
+	  "menus": {
+		"view/title": [],
+		"view/item/context": [
+		  {
+			"submenu": "recommendations.filters",
+			"when": "viewItem == securityCenter.assesments",
+			"group": "inline"
+		  },
+		  {
+			"submenu": "alerts.filters",
+			"when": "viewItem == securityCenter.alerts",
+			"group": "inline"
+		  },
+		  {
+			"submenu": "connectors.filters",
+			"when": "viewItem == securityCenter.connectors",
+			"group": "inline"
+		  }
+		],
+		"recommendations.filters": [
+		  {
+			"command": "recommendation.filter.severity",
+			"group": "1_default@1"
+		  },
+		  {
+			"command": "recommendation.filter.status",
+			"group": "2_default@1"
+		  },
+		  {
+			"command": "recommendation.filter.environment",
+			"group": "3_default@1"
+		  }
+		],
+		"alerts.filters": [
+		  {
+			"command": "alerts.filter.severity",
+			"group": "1_default@1"
+		  },
+		  {
+			"command": "alerts.filter.status",
+			"group": "2_default@1"
+		  }
+		],
+		"connectors.filters": [
+		  {
+			"command": "connectors.filter.cloudExplorer",
+			"group": "1_default@1"
+		  }
+		]
+	  },
+	  "submenus": [
+		{
+		  "id": "recommendations.filters",
+		  "label": "Filter",
+		  "icon": {
+			"light": "resources/light/filter.svg",
+			"dark": "resources/dark/filter.svg"
+		  }
+		},
+		{
+		  "id": "alerts.filters",
+		  "label": "Filter",
+		  "icon": {
+			"light": "resources/light/filter.svg",
+			"dark": "resources/dark/filter.svg"
+		  }
+		},
+		{
+		  "id": "connectors.filters",
+		  "label": "Filter",
+		  "icon": {
+			"light": "resources/light/filter.svg",
+			"dark": "resources/dark/filter.svg"
+		  }
+		}
+	  ],
+	  "configuration": {
+		"type": "object",
+		"title": "Azure configuration",
+		"properties": {
+		  "azure.severityFilter": {
+			"type": "array",
+			"default": null,
+			"description": "The severity filter"
+		  },
+		  "azure.statusFilter": {
+			"type": "array",
+			"default": null,
+			"description": "The status filter, "
+		  },
+		  "azure.environmentFilter": {
+			"type": "array",
+			"default": null,
+			"description": "The environment filter"
+		  },
+		  "azure.cloudProvider": {
+			"type": "array",
+			"default": null,
+			"description": "The cloud provider filter"
+		  }
+		}
+	  },
+	  "scripts": {
 		"vscode:prepublish": "npm run compile",
 		"compile": "tsc -p ./",
 		"watch": "tsc -watch -p ./",
 		"pretest": "npm run compile && npm run lint",
 		"lint": "eslint src --ext ts",
 		"test": "node ./out/test/runTest.js"
-	},
-	"devDependencies": {
+	  },
+	  "devDependencies": {
 		"@types/glob": "^7.2.0",
 		"@types/mocha": "^9.1.1",
 		"@types/node": "16.x",
@@ -86,21 +189,22 @@
 		"glob": "^8.0.3",
 		"mocha": "^10.0.0",
 		"typescript": "^4.7.4"
-	},
-	"dependencies": {
+	  },
+	  "dependencies": {
 		"@azure/arm-appservice": "^13.0.0",
+		"@azure/arm-deviceprovisioningservices": "^5.0.1",
 		"@azure/arm-resources": "^5.0.1",
 		"@azure/arm-security": "^5.0.0",
 		"@azure/arm-subscriptions": "^5.0.1",
 		"@azure/identity": "^2.1.0",
-		"@azure/ms-rest-azure-env": "^2.0.0",
 		"@azure/ms-rest-nodeauth": "^3.1.1",
 		"@microsoft/vscode-azext-azureutils": "^0.3.4",
 		"@microsoft/vscode-azext-utils": "^0.3.9",
-		"axios": "^0.27.2",
 		"azure-arm-website": "^5.7.0",
-		"vscode": "^1.1.37",
-		"vscode-azureextensionui": "^0.50.0",
-		"vscode-kubernetes-tools-api": "^1.3.0"
+		"vscode-azureextensionui": "^0.50.0"
+	  },
+	  "extensionDependencies": [
+		"ms-vscode.azure-account"
+	  ]
 	}
-}
+  }

@@ -3,6 +3,7 @@ import { AzExtParentTreeItem, AzExtTreeItem, IActionContext } from "@microsoft/v
 import { ResourceTreeItem } from "./ResourceTreeItem";
 
 export class SubAssessmentTreeItem extends AzExtParentTreeItem {
+
     public async loadMoreChildrenImpl(clearCache: boolean, context: IActionContext): Promise<AzExtTreeItem[]> {
         let subAssessmentsTree: AzExtTreeItem[] = [];
         let subscriptionId = `/subscriptions/${this.subscription.subscriptionId}`;
@@ -12,6 +13,7 @@ export class SubAssessmentTreeItem extends AzExtParentTreeItem {
         }
         return subAssessmentsTree;
     }
+
     public hasMoreChildrenImpl(): boolean {
         return false;
     }
@@ -28,8 +30,5 @@ export class SubAssessmentTreeItem extends AzExtParentTreeItem {
         this.assessmentsName = assessmentsName;
 		this.client = new SecurityCenter(this.subscription.credentials, this.subscription.subscriptionId);
         this.subAssessments = this.client.subAssessments;
-
     }
-
-
 }
